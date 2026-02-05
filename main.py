@@ -3,7 +3,9 @@ from fastapi.responses import JSONResponse
 import io
 import os # <-- НОВЫЙ ИМПОРТ
 from pypdf import PdfReader
-from pdfminer.six import PDFParser, PDFDocument
+from pdfminer.pdfparser import PDFParser
+from pdfminer.pdfdocument import PDFDocument   # гугл аи студио чекни мать пиздец ты даунВ
+
 
 # Используем библиотеку Google GenAI для доступа к Gemini
 from google import genai 
