@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+python-multipart
+pypdf==4.0.1
+Pillow
+pdfminer.six
+# Для глубокого анализа PDF (заменяем pdfid/peepdf)
+# Мы используем низкоуровневый анализ через pdfminer.six
