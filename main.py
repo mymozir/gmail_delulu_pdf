@@ -1,6 +1,7 @@
 from fastapi import FastAPI, UploadFile, File, Form
 from fastapi.responses import JSONResponse
 import io
+import os # <-- НОВЫЙ ИМПОРТ
 from pypdf import PdfReader
 from pdfminer.six import PDFParser, PDFDocument
 
@@ -9,20 +10,24 @@ from google import genai
 from google.genai.errors import APIError as GenAI_APIError
 
 # --- КОНФИГУРАЦИЯ ---
-# Вставьте сюда ваш API Key.
-GEMINI_API_KEY = "AIzaSyDXbkd_usLnfh5at5V_l38UNv1af74aZLE"
+# Читаем ключ из переменной окружения хостинга (Environment Variables). 
+# Это самый безопасный способ.
+GEMINI_API_KEY = os.environ.get("GEMINI_API_KEY") 
+
+if not GEMINI_API_KEY:
+    # Остановка работы сервера, если ключ не установлен - это безопасно
+    # При деплое на хостинг это обязательно вызовет ошибку, пока вы не установите ключ!
+    raise ValueError("GEMINI_API_KEY не установлен в переменных окружения. Установите его в настройках хостинга (Environment Variables).")
 
 app = FastAPI()
 
 # --- ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ---
 
 def generate_admin_summary(report_data: dict) -> str:
-    """
-    Генерирует краткий отчет для администратора с помощью Gemini AI.
-    Вызывается только при наличии рисков.
-    """
+    """Генерирует краткий отчет для администратора с помощью Gemini AI."""
     try:
-        client = genai.Client(api_key=GEMINI_API_KEY)
+        # client использует ключ, который мы получили из os.environ
+        client = genai.Client(api_key=GEMINI_API_KEY) 
         
         # Составляем промпт на основе найденных рисков
         risks_str = "\n".join([f"- {r['type']}: {r['details']}" for r in report_data["risks"]])
