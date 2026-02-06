@@ -67,14 +67,13 @@ def check_technical_threats(pdf_bytes: bytes, doc: PDFDocument) -> List[Dict[str
     catalog = doc.catalog or {}
 
     # Ключи могут быть с / и без /
-    keys = set(str(k) for k in catalog.keys())
+   keys = set(str(k) for k in catalog.keys())
 
-    # Проверка OpenAction / AA в catalog
-    if "/OpenAction" in keys or "OpenAction" in keys:
-        val = catalog.get("/OpenAction") if "/OpenAction" in catalog else catalog.get("OpenAction")
-        threats.append({
-            "type": "OpenAction (Auto-Run)",
-            "quote": safe_snippet(val)
-        })
+if "/OpenAction" in keys or "OpenAction" in keys:
+    result["open_action"] = True
 
-    if "/AA" in key
+if "/AA" in keys or "AA" in keys:
+    result["aa"] = True
+
+if "/JavaScript" in keys or "JavaScript" in keys or "/JS" in keys or "JS" in keys:
+    result["js"] = True
